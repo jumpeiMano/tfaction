@@ -27,7 +27,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: jumpeiMano/tfaction/install@main
+    - uses: jumpeiMano/tfaction/install@add-skip-setup-gcloud-flag
       id: install
     - run: github-comment exec -- ci-info run | sed "s/^export //" >> "$GITHUB_ENV"
       shell: bash
@@ -50,7 +50,7 @@ runs:
       env:
         HEAD_SHA: ${{github.event.pull_request.head.sha}}
 
-    - uses: jumpeiMano/tfaction/js@main
+    - uses: jumpeiMano/tfaction/js@add-skip-setup-gcloud-flag
       id: target-config
       with:
         action: get-target-config
@@ -66,7 +66,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
 
-    - uses: jumpeiMano/tfaction/js@main
+    - uses: jumpeiMano/tfaction/js@add-skip-setup-gcloud-flag
       id: global-config
       with:
         action: get-global-config
@@ -103,7 +103,7 @@ runs:
         role-session-name: ${{ steps.target-config.outputs.aws_role_session_name }}
         aws-region: ${{ steps.target-config.outputs.aws_region }}
 
-    - uses: jumpeiMano/tfaction/js@main
+    - uses: jumpeiMano/tfaction/js@add-skip-setup-gcloud-flag
       with:
         action: export-aws-secrets-manager
 
@@ -131,7 +131,7 @@ runs:
     - uses: google-github-actions/setup-gcloud@77e7a554d41e2ee56fc945c52dfd3f33d12def9a # v2.1.4
       if: steps.target-config.outputs.gcp_service_account != '' && inputs.skip_setup_gcloud == 'false'
 
-    - uses: jumpeiMano/tfaction/deploy-ssh-key@main
+    - uses: jumpeiMano/tfaction/deploy-ssh-key@add-skip-setup-gcloud-flag
       if: inputs.ssh_key != ''
       with:
         ssh_key: ${{ inputs.ssh_key }}
